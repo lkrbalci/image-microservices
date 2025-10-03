@@ -1,0 +1,24 @@
+services:
+  postgres:
+    image: postgres:15-alpine  # Lightweight, secure
+    container_name: image-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: image_db
+      POSTGRES_USER: ilker
+      POSTGRES_PASSWORD: 2oo600d  # Change in prod; use .env later
+    ports:
+      - "5432:5432"  # Host:Container for local access
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # Persist DB
+      - ../shared/db:/docker-entrypoint-initdb.d  # Auto-run schema on first start
+    networks:
+      - image-net  # Custom network for isolation
+
+volumes:
+  pgdata:  # Named volume for DB
+  files_volume:  # For shared filesystem (mounted later in services)
+
+networks:
+  image-net:
+    driver: bridge  # Default, isolates from other projects
